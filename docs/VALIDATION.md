@@ -62,4 +62,10 @@ python -W error::RuntimeWarning -W error::DeprecationWarning -m unittest discove
 - 尝试下载 CIFAR10 官方档案，本机该源约 60–90 KB/s，已停止此次未完成下载；未将它算作完成的真实数据验证。SVHN 真实数据下载未开始。
 - 本项目没有实现与验证表 1 全部对比方法。完整说明见 [EXPERIMENTS.md](EXPERIMENTS.md)。
 
-GitHub CI 提供 Ubuntu CPU 自动检查；工作流文件存在不等于已经运行成功，需查看实际 Actions 结果。
+GitHub Ubuntu CPU CI **实际执行成功**：[运行 39735541442](https://github.com/iiiyouhb/LLP-Shrink/actions/runs/39735541442)，对应代码提交 `9234c9ef45ee56ef94a2c22a634f88e4eaa3551b`。
+已通过环境安装、全部单元/集成检查、命令行烟雾训练及 EMA checkpoint 独立评估。该结论仍不包含 CUDA 或长训练。
+
+## 打包与交付检查
+
+`python -m pip wheel --no-deps .` 成功构建 wheel；源码通过 `compileall` 和 `git diff --check`。
+正式代码已在 `9234c9e` 提交推送到目标仓库，并核对远端 main 与本地 SHA 一致。

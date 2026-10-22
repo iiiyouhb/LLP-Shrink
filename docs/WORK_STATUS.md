@@ -8,8 +8,10 @@
 - 用户选择：先完成代码和本地验证，再连接 AutoDL。
 - 已完成：两篇论文方法/实验阅读、官方代码审计、核心实现、训练/评估/权重保存、实验网格、文档。
 - 已通过：21 项自动检查；CIFAR10 合成数据多 worker 端到端训练与重新加载评估；真实 FashionMNIST 的 WRN-28-2 前向、反向、保存和重载预检。
-- 正在完成：安装打包检查、最终提交推送。
-- GitHub：用户已通过 Git Credential Manager 登录，推送 dry-run 已成功；实际推送状态必须以远端 commit 为准。
+- 已完成：安装包 wheel 构建、源码编译检查、提交推送；代码提交 `9234c9e`，远端 main 与本地 SHA 已核对一致。
+- GitHub Actions Ubuntu CPU 检查已成功：运行 `39735541442`，覆盖安装、21 项检查、训练与重载评估。
+- 当前本地开发、检查和 GitHub 提交阶段完成；下一阶段等待用户提供 SSH 后进行 AutoDL 实机验证与完整实验。
+- GitHub：认证与实际写入均成功，无需用户再次提供登录信息。
 - 本机环境：`C:\Anaconda\envs\pyt\python.exe`，PyTorch 2.6.0+cpu / torchvision 0.21.0+cpu；无可用 CUDA。
 - 原始材料、下载数据、调试日志位于当前工作区 `work/`；不得将它们误提交到 GitHub。
 
