@@ -1,0 +1,29 @@
+{
+  "completed_epochs": 2,
+  "planned_epochs": 2,
+  "complete": true,
+  "synthetic": true,
+  "final": {
+    "epoch": 1,
+    "global_step": 4,
+    "loss": 2.312991142272949,
+    "loss_u": 0.0,
+    "loss_prop": 2.312991142272949,
+    "entropy_bits": 3.3121153116226196,
+    "lambda_mean": 0.0,
+    "selected": 0,
+    "selected_precision": null,
+    "raw_acc": 10.526315789473685,
+    "ema_acc": 10.526315789473685,
+    "lr": 1.8369701987210296e-18,
+    "seconds": 11.202999999979511,
+    "synthetic": true
+  },
+  "best_test_descriptive_only": {
+    "raw": 10.526315789473685,
+    "raw_epoch": 0,
+    "ema": 10.526315789473685,
+    "ema_epoch": 0
+  },
+  "selection_note": "No validation set specified in paper; best test is descriptive, not unbiased model selection."
+}

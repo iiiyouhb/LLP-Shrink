@@ -1,0 +1,8 @@
+# Install matching torch / torchvision wheels for the server CUDA driver first.
+# This tested version pair also supports CPU verification.
+torch==2.6.0
+torchvision==0.21.0
+numpy==1.26.4
+Pillow==11.1.0
+scipy==1.13.1
+opencv-python-headless==4.11.0.86

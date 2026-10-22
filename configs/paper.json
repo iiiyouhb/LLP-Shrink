@@ -1,0 +1,7 @@
+{
+  "dataset": "CIFAR10", "method": "shrink", "bag_size": 16,
+  "batch_instances": 1024, "epochs": 1024, "threshold": 0.95, "seed": 3,
+  "depth": 28, "width": 2, "lr": 0.03, "momentum": 0.9,
+  "weight_decay": 0.0005, "nesterov": true, "scheduler": "upstream",
+  "ema": true, "ema_decay": 0.999, "deterministic": true, "amp": false
+}

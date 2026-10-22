@@ -1,0 +1,7 @@
+{
+  "dataset": "CIFAR10", "method": "shrink", "bag_size": 4,
+  "batch_instances": 16, "epochs": 2, "threshold": 0.95, "seed": 3,
+  "depth": 10, "width": 1, "workers": 0, "device": "cpu",
+  "synthetic": true, "synthetic_train": 32, "synthetic_test": 19,
+  "export_weights_every": 1, "audit_labels": true
+}
