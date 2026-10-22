@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "llp-shrink"
 version = "0.1.0"
-description = "Auditable reproduction of Learning from Label Proportions with Shrinking Bag"
+description = "Implementation of Learning from Label Proportions with Shrinking Bag"
 requires-python = ">=3.9"
 dependencies = ["torch>=2.6,<2.7", "torchvision>=0.21,<0.22", "numpy>=1.24,<2", "Pillow>=10,<12", "scipy>=1.10,<1.14", "opencv-python-headless>=4.8,<4.12"]
 

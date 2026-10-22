@@ -1,15 +1,16 @@
-# Provenance
+# Third-party acknowledgements
 
-Based on **Forming Auxiliary High-confident Instance-level Loss to Promote Learning from Label Proportions**, arXiv:2411.10364v2, Tianhao Ma et al.
+We thank the authors of [LLP-AHIL](https://github.com/TianhaoMa5/LLP-AHIL) for making their implementation available.
 
-- Paper: https://arxiv.org/abs/2411.10364
-- Repository: https://github.com/TianhaoMa5/LLP-AHIL
-- Audited commit: `65c4bfa201f4a4d820452e5be9de51c5f6c4b326`
-- `WideResNet.py` -> `llp_shrink/model.py`: parameterized input channels, disabled unused projection by default, protected optional L2 normalization, removed standalone demo.
-- `datasets/rand.py` -> `llp_shrink/vendor/rand_rgb.py`: attribution header, integer-safe autocontrast and posterize.
-- `datasets/randaugment_grey.py` -> `llp_shrink/vendor/rand_gray.py`: same integer fixes and attribution.
-- Original SHA-256 values are in `docs/upstream_manifest.json`.
+The following components include code from commit `65c4bfa201f4a4d820452e5be9de51c5f6c4b326`:
 
-The upstream snapshot does not contain a LICENSE file. This document records provenance; it does not assign a new license to upstream code. No third-party paper PDFs or datasets are bundled or uploaded.
+| Component | Source | Local changes |
+| --- | --- | --- |
+| `llp_shrink/model.py` | `WideResNet.py` | Configurable input channels and projection; numerical guard for optional normalization |
+| `llp_shrink/vendor/rand_rgb.py` | `datasets/rand.py` | Integer-safe AutoContrast and Posterize |
+| `llp_shrink/vendor/rand_gray.py` | `datasets/randaugment_grey.py` | Integer-safe AutoContrast and Posterize |
 
-The new loss, data orchestration, checkpointing, tests, CLI, experiment scripts and documentation implement **Learning from Label Proportions with Shrinking Bag** by Xueyou Lu, Yueyi Wang and Wenxu Gao, from the local Lu.pdf supplied for this task. The repository retains its original initial commit.
+Original file hashes are recorded in [the source manifest](docs/upstream_manifest.json).
+The source snapshot contains no LICENSE file; this acknowledgement does not assign a license to that code.
+
+Reference: Tianhao Ma, Han Chen, Juncheng Hu, Yungang Zhu, and Ximing Li. *Forming Auxiliary High-confident Instance-level Loss to Promote Learning from Label Proportions*. [arXiv:2411.10364](https://arxiv.org/abs/2411.10364).

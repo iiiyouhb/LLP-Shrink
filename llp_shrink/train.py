@@ -125,7 +125,7 @@ def _run(cfg, resume, stop_after_epoch, out, logger):
             for it, batch in enumerate(loader):
                 weak, strong, counts = [batch[k].to(device, non_blocking=True) for k in ("weak", "strong", "counts")]
                 b, m, c, h, w = weak.shape
-                # Same joint weak+strong forward as AHIL; BatchNorm sees both views.
+                # Joint weak/strong forward; BatchNorm sees both views.
                 inputs = torch.cat([weak.flatten(0, 1), strong.flatten(0, 1)])
                 with torch.autocast(device_type=device.type, enabled=cfg.amp):
                     logits = model(inputs)

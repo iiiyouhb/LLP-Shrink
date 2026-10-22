@@ -1,40 +1,51 @@
-# 复现范围与实验配置
+# Experiment settings
 
-## Lu.pdf 明确给出的配置
+## Data and model
 
-| 项目 | 配置 |
-| --- | --- |
-| 数据 | CIFAR-10：50,000/10,000；SVHN：73,257/26,032；Fashion-MNIST：60,000/10,000 |
-| 类别数 | 全部为 10 |
-| 图像 | CIFAR-10/SVHN：3×32×32；Fashion-MNIST：1×28×28 |
-| 袋 | 随机、不相交、固定；M=16 或 128 |
-| 模型 | WRN-28-2 |
-| 优化 | SGD；momentum=0.9；weight_decay=5e-4；lr=0.03；余弦调度 |
-| 时长 | 1024 epochs |
-| Minibatch | 1024 个原始实例；M=16 时 64 袋，M=128 时 8 袋 |
-| 阈值 | 主实验 τ=0.95，严格大于 |
-| 损失混合 | 每 minibatch 实际选择数量 / 实例总数 |
-| 消融 | CIFAR-10，M=16 和 128，不同 τ |
+| Dataset | Train / test instances | Input shape | Classes |
+| --- | --- | --- | --- |
+| CIFAR-10 | 50,000 / 10,000 | 3×32×32 | 10 |
+| SVHN | 73,257 / 26,032 | 3×32×32 | 10 |
+| Fashion-MNIST | 60,000 / 10,000 | 1×28×28 | 10 |
 
-每轮步数（采用上游丢弃尾部 minibatch 的行为）：CIFAR-10 为 48，SVHN 为 71，Fashion-MNIST 为 58。
-每轮进入更新的实例数分别为 49,152、72,704、59,392；不把 1024 epochs 误写成每轮 1024 updates。
-测试集完整评估，分母分别为 10,000、26,032、10,000。
+All three datasets use WRN-28-2. Bags are fixed, random, disjoint, and have size 16 or 128. A minibatch contains 1024 original instances: 64 bags of size 16 or 8 bags of size 128.
 
-## 论文未写全、沿用上游或明确约定的内容
+## Optimization
 
-- seed：上游单次默认 3。论文未给出表格重复次数，默认不擅自改成三次；可显式 `--seeds 1 2 3`。
-- τ 网格：上游 AHIL 没有对应 Shrink 消融脚本。提供 `[0,.25,.5,.75,.95,.96,.98,1]` 作为可编辑候选，不将它称作恢复到的作者精确网格。
-- 余弦：沿用上游最终生效的函数，见审计文档；不同函数不能混在一起汇总。
-- EMA：保留上游 eval EMA=0.999，同时报告 raw 与 EMA；Lu.pdf 未指定表格对应哪个版本。
-- 原论文未指定 validation split、最佳轮次选择或最终轮次。本项目记录逐 epoch 测试指标与最佳测试值，但聚合默认使用最终轮次，不把最佳测试值作为无偏泛化评估。
-- FashionMNIST 归一化沿用上游 `(0.1307,0.3081)`，没有悄悄换成其他数据统计。
-- epoch 内不是永久删除样本。袋成员固定，选择/集合在每次前向重新计算。
-- 浮点默认 FP32；AMP 显式开启，GPU 实机验证前不声称通过 AMP 校验。
+`configs/paper.json` specifies 1024 epochs, threshold 0.95, SGD with Nesterov momentum 0.9, learning rate 0.03, and weight decay 0.0005. BatchNorm parameters are excluded from weight decay. EMA decay is 0.999. The default seed is 3; multiple seeds are explicitly passed to the experiment launcher.
 
-## 表格覆盖边界
+The default scheduler, named `upstream` in the CLI, is:
 
-`run_experiments.py --suite main` 生成 LLP-Shrink 六个单元的完整训练命令，`--suite threshold` 生成两种袋大小的阈值消融。
-本项目不填造表 1 的数值，也不通过调参强行追齐论文结果。
+```text
+lr(t) = lr(0) * cos(pi*t / (2*T))
+T = epochs * steps_per_epoch
+```
 
-可选 `--method dllp/ahil/supervised` 用来核对方法变化。它们共享数据与训练管线，属于诊断对照；特别是全监督入口也沿用联合 weak+strong 前向的 BN 统计，不把它宣称为原论文完整全监督基线的逐位复现。
-LLPFC、LLP-VAT、ROT 未在本项目中实现与验证。如果任务扩展为重跑整张对比表，需要单独审计对应官方实现与配置。
+Alternative schedules are `cosine`: `(1+cos(pi*t/T))/2`, and `ahil-paper`: `cos(7*pi*t/(16*T))`. Runs with different schedules are grouped separately when summarizing results.
+
+## Data pipeline
+
+Weak augmentation uses reflect-padded random crops and horizontal flips, with flips disabled for SVHN. Strong augmentation uses a separate crop/flip view, RandAugment with two sampled operations at magnitude 10, and Cutout. Images retain their native spatial resolution.
+
+| Dataset | Mean | Standard deviation |
+| --- | --- | --- |
+| CIFAR-10 | (0.4914, 0.4822, 0.4465) | (0.2471, 0.2435, 0.2616) |
+| SVHN | (0.4380, 0.4440, 0.4730) | (0.1751, 0.1771, 0.1744) |
+| Fashion-MNIST | (0.1307,) | (0.3081,) |
+
+After randomly permuting all training instances, any remainder smaller than a full bag is recorded and excluded. The training loader shuffles bags each epoch and drops incomplete minibatches. This yields 48, 71, and 58 updates per epoch for CIFAR-10, SVHN, and Fashion-MNIST, respectively. The complete test split is evaluated, including its last partial batch.
+
+## Suites and reporting
+
+- `main`: the three datasets with bag sizes 16 and 128, using threshold 0.95.
+- `threshold`: CIFAR-10 with both bag sizes and a configurable threshold list. The supplied list is a configurable evaluation grid, not an exact archived record of the paper's sweep.
+- The launcher defaults to one seed, 3. Use `--seeds` for repeated trials.
+- Raw and EMA test accuracy are logged separately. Summaries use final-epoch values and sample standard deviation across seeds.
+- Best-test checkpoints are retained for inspection. They are not selected using an independent validation split.
+- Instance selection is recomputed at each step. Individual labels are used only to create bag counts or, with `--audit-labels`, report diagnostics.
+
+## Optional reference objectives
+
+`--method dllp`, `--method ahil`, and `--method supervised` provide reference objectives in the shared training pipeline. AHIL defaults to `beta_b=beta_i=1` and `ahil_lambda=5`. The supervised mode alone uses instance labels in its objective; it shares the joint weak/strong BatchNorm forward with the other modes.
+
+These entries do not constitute implementations of every baseline in the paper. LLPFC, LLP-VAT, and ROT are not included. This release supplies training configurations and software tests; pretrained checkpoints and complete experiment results are not bundled.

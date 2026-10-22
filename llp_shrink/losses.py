@@ -1,4 +1,4 @@
-"""Lu.pdf equations (1)-(7). Targets and membership never receive gradients.
+"""LLP-Shrink equations (1)-(7). Targets and membership never receive gradients.
 
 The class-specific residual vectors are NOT normalized over classes: each
 coordinate is computed on a different set. See docs/METHOD.md.
@@ -95,7 +95,7 @@ def shrink_loss(weak, strong, counts, threshold=0.95):
 
 def reference_loss(weak, strong, counts, method="dllp", beta_b=1.0, beta_i=1.0,
                    ahil_lambda=5.0, labels=None):
-    """Optional diagnostic comparators; AHIL uses its paper's hyperparameters.
+    """Reference objectives with separate method-specific hyperparameters.
 
     No claim of reproducing the complete baseline table. Supervised is an explicit
     oracle and the only method allowed to consume instance ground-truth labels.

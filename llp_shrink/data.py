@@ -19,7 +19,7 @@ from .vendor.rand_gray import RandomAugment as GrayRandAugment
 SPECS = {
     "CIFAR10": (3, 32, (0.4914, 0.4822, 0.4465), (0.2471, 0.2435, 0.2616)),
     "SVHN": (3, 32, (0.4380, 0.4440, 0.4730), (0.1751, 0.1771, 0.1744)),
-    # Inherited from AHIL, including its MNIST-style normalization constants.
+    # Normalization used for the grayscale experiment configuration.
     "FashionMNIST": (1, 28, (0.1307,), (0.3081,)),
 }
 
@@ -71,7 +71,7 @@ class BagPartition:
             raise ValueError("labels must be a one-dimensional integer array")
         if np.any((labels < 0) | (labels >= classes)):
             raise ValueError("labels outside valid class range")
-        # RandomState follows the legacy NumPy RNG family used by AHIL.
+        # Use a dedicated seeded RNG for reproducible bag membership.
         order = np.random.RandomState(seed).permutation(len(labels))
         usable = len(labels) // bag_size * bag_size
         indices = order[:usable].reshape(-1, bag_size)

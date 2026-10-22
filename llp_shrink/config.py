@@ -82,7 +82,7 @@ class Config:
 
 
 def parse_args(argv=None):
-    parser = argparse.ArgumentParser(description="LLP-Shrink: Lu.pdf equations (1)-(7)")
+    parser = argparse.ArgumentParser(description="LLP-Shrink training")
     parser.add_argument("--config", type=Path)
     parser.add_argument("--resume", type=Path, help="trusted checkpoint created by this project")
     parser.add_argument("--stop-after-epoch", type=int, help="stop after this many completed epochs; keep full schedule")

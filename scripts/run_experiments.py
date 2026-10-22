@@ -1,4 +1,4 @@
-"""Print or execute the Lu.pdf main/threshold grid, one process per experiment."""
+"""Print or execute the LLP-Shrink experiment grid, one process per experiment."""
 import argparse
 import json
 import shlex
@@ -19,9 +19,9 @@ def build_jobs(suite,seeds,thresholds):
 def main(argv=None):
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--suite',choices=['main','threshold'],default='main')
-    p.add_argument('--seeds',type=int,nargs='+',default=[3],help='AHIL default is seed=3; multiple runs must be explicit')
+    p.add_argument('--seeds',type=int,nargs='+',default=[3],help='random seeds for independent runs (default: 3)')
     p.add_argument('--thresholds',type=float,nargs='+',default=[0,.25,.5,.75,.95,.96,.98,1],
-                   help='candidate grid read from figure, not a recovered author sweep')
+                   help='threshold values for the configurable evaluation sweep')
     p.add_argument('--root',default='data')
     p.add_argument('--output-root',default='runs')
     p.add_argument('--device',default='cuda')
